@@ -36,16 +36,16 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnSearchClear = new System.Windows.Forms.Button();
+            this.btnSearchRemove = new System.Windows.Forms.Button();
+            this.btnSearchAdd = new System.Windows.Forms.Button();
+            this.btnRemoveKeyword = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.lstSearchResults = new System.Windows.Forms.ListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lstSearchResults = new System.Windows.Forms.ListBox();
-            this.btnRemoveKeyword = new System.Windows.Forms.Button();
-            this.btnSearchAdd = new System.Windows.Forms.Button();
-            this.btnSearchRemove = new System.Windows.Forms.Button();
-            this.btnSearchClear = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -106,7 +106,7 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(608, 484);
+            this.tabControl1.Size = new System.Drawing.Size(930, 484);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage4
@@ -132,10 +132,70 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(600, 458);
+            this.tabPage1.Size = new System.Drawing.Size(922, 458);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Search";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // btnSearchClear
+            // 
+            this.btnSearchClear.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.btnSearchClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSearchClear.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnSearchClear.Location = new System.Drawing.Point(212, 402);
+            this.btnSearchClear.Name = "btnSearchClear";
+            this.btnSearchClear.Size = new System.Drawing.Size(75, 23);
+            this.btnSearchClear.TabIndex = 11;
+            this.btnSearchClear.Text = "Clear";
+            this.btnSearchClear.UseVisualStyleBackColor = false;
+            // 
+            // btnSearchRemove
+            // 
+            this.btnSearchRemove.BackColor = System.Drawing.Color.Red;
+            this.btnSearchRemove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSearchRemove.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnSearchRemove.Location = new System.Drawing.Point(437, 402);
+            this.btnSearchRemove.Name = "btnSearchRemove";
+            this.btnSearchRemove.Size = new System.Drawing.Size(75, 23);
+            this.btnSearchRemove.TabIndex = 10;
+            this.btnSearchRemove.Text = "Remove";
+            this.btnSearchRemove.UseVisualStyleBackColor = false;
+            // 
+            // btnSearchAdd
+            // 
+            this.btnSearchAdd.BackColor = System.Drawing.Color.Lime;
+            this.btnSearchAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSearchAdd.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnSearchAdd.Location = new System.Drawing.Point(518, 402);
+            this.btnSearchAdd.Name = "btnSearchAdd";
+            this.btnSearchAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnSearchAdd.TabIndex = 9;
+            this.btnSearchAdd.Text = "Register";
+            this.btnSearchAdd.UseVisualStyleBackColor = false;
+            // 
+            // btnRemoveKeyword
+            // 
+            this.btnRemoveKeyword.BackColor = System.Drawing.Color.Red;
+            this.btnRemoveKeyword.FlatAppearance.BorderColor = System.Drawing.Color.Red;
+            this.btnRemoveKeyword.FlatAppearance.BorderSize = 0;
+            this.btnRemoveKeyword.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRemoveKeyword.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnRemoveKeyword.Location = new System.Drawing.Point(9, 402);
+            this.btnRemoveKeyword.Name = "btnRemoveKeyword";
+            this.btnRemoveKeyword.Size = new System.Drawing.Size(193, 23);
+            this.btnRemoveKeyword.TabIndex = 8;
+            this.btnRemoveKeyword.Text = "Remove (keyword)";
+            this.btnRemoveKeyword.UseVisualStyleBackColor = false;
+            this.btnRemoveKeyword.Click += new System.EventHandler(this.btnRemoveKeyword_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(209, 38);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(79, 13);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Search Results";
             // 
             // label1
             // 
@@ -158,9 +218,17 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.lstSearchResults);
-            this.splitContainer1.Size = new System.Drawing.Size(588, 341);
-            this.splitContainer1.SplitterDistance = 196;
+            this.splitContainer1.Size = new System.Drawing.Size(875, 341);
+            this.splitContainer1.SplitterDistance = 291;
             this.splitContainer1.TabIndex = 6;
+            // 
+            // lstSearchResults
+            // 
+            this.lstSearchResults.FormattingEnabled = true;
+            this.lstSearchResults.Location = new System.Drawing.Point(3, 3);
+            this.lstSearchResults.Name = "lstSearchResults";
+            this.lstSearchResults.Size = new System.Drawing.Size(574, 329);
+            this.lstSearchResults.TabIndex = 0;
             // 
             // tabPage2
             // 
@@ -183,79 +251,11 @@
             this.tabPage3.Text = "WebSites";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(209, 38);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(79, 13);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Search Results";
-            // 
-            // lstSearchResults
-            // 
-            this.lstSearchResults.FormattingEnabled = true;
-            this.lstSearchResults.Location = new System.Drawing.Point(3, 3);
-            this.lstSearchResults.Name = "lstSearchResults";
-            this.lstSearchResults.Size = new System.Drawing.Size(382, 329);
-            this.lstSearchResults.TabIndex = 0;
-            // 
-            // btnRemoveKeyword
-            // 
-            this.btnRemoveKeyword.BackColor = System.Drawing.Color.Red;
-            this.btnRemoveKeyword.FlatAppearance.BorderColor = System.Drawing.Color.Red;
-            this.btnRemoveKeyword.FlatAppearance.BorderSize = 0;
-            this.btnRemoveKeyword.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRemoveKeyword.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnRemoveKeyword.Location = new System.Drawing.Point(9, 402);
-            this.btnRemoveKeyword.Name = "btnRemoveKeyword";
-            this.btnRemoveKeyword.Size = new System.Drawing.Size(193, 23);
-            this.btnRemoveKeyword.TabIndex = 8;
-            this.btnRemoveKeyword.Text = "Remove (keyword)";
-            this.btnRemoveKeyword.UseVisualStyleBackColor = false;
-            this.btnRemoveKeyword.Click += new System.EventHandler(this.btnRemoveKeyword_Click);
-            // 
-            // btnSearchAdd
-            // 
-            this.btnSearchAdd.BackColor = System.Drawing.Color.Lime;
-            this.btnSearchAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSearchAdd.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnSearchAdd.Location = new System.Drawing.Point(518, 402);
-            this.btnSearchAdd.Name = "btnSearchAdd";
-            this.btnSearchAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnSearchAdd.TabIndex = 9;
-            this.btnSearchAdd.Text = "Register";
-            this.btnSearchAdd.UseVisualStyleBackColor = false;
-            // 
-            // btnSearchRemove
-            // 
-            this.btnSearchRemove.BackColor = System.Drawing.Color.Red;
-            this.btnSearchRemove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSearchRemove.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnSearchRemove.Location = new System.Drawing.Point(437, 402);
-            this.btnSearchRemove.Name = "btnSearchRemove";
-            this.btnSearchRemove.Size = new System.Drawing.Size(75, 23);
-            this.btnSearchRemove.TabIndex = 10;
-            this.btnSearchRemove.Text = "Remove";
-            this.btnSearchRemove.UseVisualStyleBackColor = false;
-            // 
-            // btnSearchClear
-            // 
-            this.btnSearchClear.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnSearchClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSearchClear.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnSearchClear.Location = new System.Drawing.Point(212, 402);
-            this.btnSearchClear.Name = "btnSearchClear";
-            this.btnSearchClear.Size = new System.Drawing.Size(75, 23);
-            this.btnSearchClear.TabIndex = 11;
-            this.btnSearchClear.Text = "Clear";
-            this.btnSearchClear.UseVisualStyleBackColor = false;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(625, 503);
+            this.ClientSize = new System.Drawing.Size(1206, 503);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Main";

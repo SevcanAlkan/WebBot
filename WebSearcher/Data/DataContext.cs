@@ -141,6 +141,19 @@ namespace WebSearcher.Data
             }
         }
 
+        public static string TakeKeyword()
+        {
+            string txt = "";
+
+            if (Keywords.Count > 0)
+            {
+                txt = Keywords.First();
+                Keywords.Remove(txt);
+            }
+
+            return txt;
+        }
+
         public static void RemoveKeyword(string keyword)
         {
             keyword = keyword.ToLower().Trim();
