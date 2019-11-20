@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebSearcher.Data;
 using WebSearcher.Models;
 
 namespace WebSearcher.Helper
@@ -49,7 +50,7 @@ namespace WebSearcher.Helper
 
             if (pageLimit > 0 && pageLimit < pageCount)
                 pageCount = pageLimit;
-            
+
             for (int i = 1; i <= pageCount; i++)
             {
                 if (i != 1)
@@ -102,11 +103,66 @@ namespace WebSearcher.Helper
             }
         }
 
+        public SearchPoint HPScanAd(string url)
+        {
+            SearchPoint rec = new SearchPoint();
+            rec.Id = Guid.NewGuid();
+            rec.WebSite = 1;
+            rec.CheckDate = DateTime.Now;
+            rec.UrlParameters = url.Trim();
+
+            try
+            {
+                if (rec.UrlParameters.Substring(0, 1) != "/")
+                {
+                    rec.UrlParameters = "/" + rec.UrlParameters;
+                }
+
+                HtmlWeb web = new HtmlWeb();
+                HtmlAgilityPack.HtmlDocument doc = web.Load(WebSiteContext.GetURL(rec.WebSite) + rec.UrlParameters);
+
+                var price = doc.DocumentNode.Descendants("span").Where(d => d.Attributes.Count > 0
+                    && d.Attributes["id"] != null && d.Attributes["id"].Value.Contains("offering-price")).Select(a => a.Attributes["content"]).FirstOrDefault();
+
+                rec.Price = Convert.ToDouble(price.Value);
+
+                string priceDiscounted = "";
+                try
+                {
+                    priceDiscounted = doc.DocumentNode.Descendants("div").Where(d => d.Attributes.Count > 0
+                    && d.Attributes["class"] != null && d.Attributes["class"].Value.Contains("extra-discount-price")).Select(a => a.ChildNodes.Descendants("span").FirstOrDefault().InnerText).FirstOrDefault();
+
+                    rec.Price = Convert.ToDouble(priceDiscounted);
+                }
+                catch (Exception)
+                {
+                    if(price == null)
+                    {
+                        return null;
+                    }
+                }
+                
+                var name = doc.DocumentNode.Descendants("h1").Where(d => d.Attributes.Count > 0
+                   && d.Attributes["id"] != null && d.Attributes["id"].Value.Contains("product-name")).FirstOrDefault().InnerText;
+
+                rec.Name = name.Trim().Replace("\r", "").Replace("\n", "");
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+            return rec;
+        }
 
         #endregion
 
         #region N11
 
+        public SearchPoint N11ScanAd(string url)
+        {
+            return new SearchPoint();
+        }
 
         #endregion
     }

@@ -65,6 +65,7 @@
     <Compile Include="Data\DataContext.cs" />
     <Compile Include="Data\KeywordContext.cs" />
     <Compile Include="Data\SearchPoint.cs" />
+    <Compile Include="Data\WebSiteContext.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
