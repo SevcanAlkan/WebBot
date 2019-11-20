@@ -311,7 +311,24 @@ namespace WebSearcher
 
         private void tsBtnShow_Click(object sender, EventArgs e)
         {
+            var rowIndex = dgAds.CurrentCell.RowIndex;
+            var id = (Guid)dgAds.Rows[rowIndex].Cells["Id"].Value;
 
+            if (id != null && id != Guid.Empty)
+            {
+                var gridRec = DataContext.searchPoints.Where(a => a.Id == id).FirstOrDefault();
+
+                if (gridRec != null)
+                {
+                    rec = gridRec;
+
+                    btnTest.Enabled = false;
+                    txtName.Enabled = false;
+                    txtURL.Enabled = false;
+                }
+            }
+
+            FillForm();
         }
 
         private void btnClearRegistrationFrom_Click(object sender, EventArgs e)
@@ -326,6 +343,9 @@ namespace WebSearcher
             lblTestStatus.Text = "";
             btnAdd.Enabled = false;
             cbWebSite.Enabled = true;
+            btnTest.Enabled = true;
+            txtName.Enabled = true;
+            txtURL.Enabled = true;
 
             rec = null;
         }
@@ -388,6 +408,8 @@ namespace WebSearcher
         {
             lblId.Text = rec.Id.ToString();
             txtName.Text = rec.Name;
+            txtURL.Text = rec.UrlParameters;
+            cbWebSite.SelectedItem = WebSiteContext.GetModel(rec.WebSite);
             lblCheckDate.Text = String.Format("{0:dd/MM/yyyy hh:mm:ss tt}", rec.CheckDate);
             txtPrice.Text = String.Format("{0:00}", rec.Price);
             lblCurrency.Text = WebSiteContext.GetCurrencyCode(rec.WebSite);
