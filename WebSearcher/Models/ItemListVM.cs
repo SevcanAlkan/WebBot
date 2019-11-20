@@ -8,6 +8,8 @@ namespace WebSearcher.Models
 {
     public class ItemListVM
     {
+        public Guid Id { get; set; }
+        public int WebSiteId { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
         public string URL { get; set; }

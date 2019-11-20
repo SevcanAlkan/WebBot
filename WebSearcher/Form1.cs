@@ -18,6 +18,7 @@ namespace WebSearcher
 {
     public partial class Form1 : Form
     {
+        private DataContext _db;
         private static List<ItemListVM> SearchResults = new List<ItemListVM>();
         private static Scanner sc = new Scanner();
         //Task searchTask;
@@ -26,11 +27,31 @@ namespace WebSearcher
         public Form1()
         {
             InitializeComponent();
+
+            var recs = DataContext.Set<SearchPoint>().ToList();
+
+            SearchPoint s = new SearchPoint() { CheckDate = DateTime.UtcNow, Id = Guid.NewGuid(), Price = 2110.3, UrlParameters = "2331", WebSite = 1 };
+
+            DataContext.Set<SearchPoint>().Add(s);
+            DataContext.SaveChanges();
+        }
+
+        private DataContext DataContext
+        {
+            get
+            {
+                if (_db == null)
+                {
+                    _db = new DataContext();
+                }
+
+                return _db;
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            DataContext.Load();
+            KeywordContext.Load();
             this.UpdateForm();
 
             //searchTask = Task.Run((Action)Search);
@@ -47,9 +68,9 @@ namespace WebSearcher
 
         private void Search()
         {
-            if (DataContext.Keywords.Count > 0)
+            if (KeywordContext.Keywords.Count > 0)
             {
-                var result = sc.ScanAds(DataContext.TakeKeyword(), 3);
+                var result = sc.HPScanAds(KeywordContext.TakeKeyword(), 3);
 
                 if (result != null && result.Count > 0)
                 {
@@ -65,13 +86,13 @@ namespace WebSearcher
         {
             //searchTask.Dispose();
             //t.Stop();
-            DataContext.Save();
+            KeywordContext.Save();
         }
 
         private void UpdateForm()
         {
             lstSearchKeywords.DataSource = null;
-            lstSearchKeywords.DataSource = DataContext.Keywords;
+            lstSearchKeywords.DataSource = KeywordContext.Keywords;
             lstSearchKeywords.Refresh();
             lstSearchKeywords.Update();
 
@@ -81,13 +102,37 @@ namespace WebSearcher
             lstSearchResults.Update();
         }
 
+        private void btnRemoveKeyword_Click(object sender, EventArgs e)
+        {
+            string text = this.lstSearchKeywords.SelectedItem.ToString();
+
+            if (text != "")
+            {
+                KeywordContext.RemoveKeyword(text);
+                this.UpdateForm();
+            }
+        }
+        
+        private void lstSearchResults_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtKeyword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnAddKeyword.PerformClick();
+            }
+        }
+
         private void btnAddKeyword_Click(object sender, EventArgs e)
         {
             this.txtKeyword.Text = this.txtKeyword.Text.Trim();
 
             if (this.txtKeyword.Text != "")
             {
-                DataContext.AddKeyword(this.txtKeyword.Text);
+                KeywordContext.AddKeyword(this.txtKeyword.Text);
                 Task.Factory.StartNew(Search, TaskCreationOptions.LongRunning);
 
                 this.UpdateForm();
@@ -96,28 +141,17 @@ namespace WebSearcher
             this.txtKeyword.Text = "";
         }
 
-        private void btnRemoveKeyword_Click(object sender, EventArgs e)
+        private void AdsForm_Enter(object sender, KeyEventArgs e)
         {
-            string text = this.lstSearchKeywords.SelectedItem.ToString();
-
-            if (text != "")
+            if (e.KeyCode == Keys.Enter)
             {
-                DataContext.RemoveKeyword(text);
-                this.UpdateForm();
+                btnAdd.PerformClick();
             }
         }
 
-        public string Get(string uri)
+        private void btnAdd_Click(object sender, EventArgs e)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                return reader.ReadToEnd();
-            }
         }
     }
 

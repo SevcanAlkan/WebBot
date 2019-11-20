@@ -10,6 +10,7 @@ namespace WebSearcher.Helper
 {
     public class Scanner
     {
+        #region Hepsiburada
         //https://www.hepsiburada.com/ara?q=
         //https://www.hepsiburada.com/ara?q=&sayfa=
 
@@ -17,14 +18,10 @@ namespace WebSearcher.Helper
 
         //SearchListing
         //search-item > div.box product > a : URL
-
         //search-item > div.box product > a >  product-detail > last-price > price-value : SPECIAL PRICE
-
-        //  IF last-price not found, search price-container!
-
         //search-item > div.box product > a >  product-detail > price-container > product-price : PRICE
 
-        public List<ItemListVM> ScanAds(string keyword, int pageLimit = 0)
+        public List<ItemListVM> HPScanAds(string keyword, int webSiteId, int pageLimit = 0)
         {
             if (keyword == "")
                 return new List<ItemListVM>();
@@ -60,12 +57,12 @@ namespace WebSearcher.Helper
                     doc = web.Load($"https://www.hepsiburada.com/ara?q=" + keyword + "&sayfa=" + i.ToString());
                 }
 
-                processSearchPage(ref doc, ref itemList);
+                HPProcessSearchPage(ref doc, ref itemList, ref webSiteId);
             }
 
             return itemList;
         }
-        private void processSearchPage(ref HtmlAgilityPack.HtmlDocument doc, ref List<ItemListVM> itemList)
+        private void HPProcessSearchPage(ref HtmlAgilityPack.HtmlDocument doc, ref List<ItemListVM> itemList, ref int webSiteId)
         {
             var ads = doc.DocumentNode.Descendants("li").Where(d => d.Attributes.Count > 0
                 && d.Attributes["class"] != null
@@ -100,10 +97,17 @@ namespace WebSearcher.Helper
                     price = Double.Parse(priceStr);
                 }
 
-                var rec = new ItemListVM() { Name = name, Price = price, URL = url };
+                var rec = new ItemListVM() { Id = Guid.NewGuid(), WebSiteId = webSiteId, Name = name, Price = price, URL = url };
                 itemList.Add(rec);
             }
         }
 
+
+        #endregion
+
+        #region N11
+
+
+        #endregion
     }
 }
