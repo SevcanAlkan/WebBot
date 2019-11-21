@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\BotStatusEnum.cs" />
     <Compile Include="Data\DataContext.cs" />
     <Compile Include="Data\KeywordContext.cs" />
     <Compile Include="Data\SearchPoint.cs" />

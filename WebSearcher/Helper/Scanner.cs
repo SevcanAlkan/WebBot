@@ -124,6 +124,7 @@ namespace WebSearcher.Helper
                 var price = doc.DocumentNode.Descendants("span").Where(d => d.Attributes.Count > 0
                     && d.Attributes["id"] != null && d.Attributes["id"].Value.Contains("offering-price")).Select(a => a.Attributes["content"]).FirstOrDefault();
 
+                if(price!=null)
                 rec.Price = Convert.ToDouble(price.Value);
 
                 string priceDiscounted = "";
@@ -146,6 +147,43 @@ namespace WebSearcher.Helper
                    && d.Attributes["id"] != null && d.Attributes["id"].Value.Contains("product-name")).FirstOrDefault().InnerText;
 
                 rec.Name = name.Trim().Replace("\r", "").Replace("\n", "");
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+            return rec;
+        }
+
+        public SearchPoint HPUpdateAd(SearchPoint rec)
+        {
+            try
+            {
+                HtmlWeb web = new HtmlWeb();
+                HtmlAgilityPack.HtmlDocument doc = web.Load(WebSiteContext.GetURL(rec.WebSite) + rec.UrlParameters);
+
+                var price = doc.DocumentNode.Descendants("span").Where(d => d.Attributes.Count > 0
+                    && d.Attributes["id"] != null && d.Attributes["id"].Value.Contains("offering-price")).Select(a => a.Attributes["content"]).FirstOrDefault();
+
+                if (price != null)
+                    rec.Price = Convert.ToDouble(price.Value);
+
+                string priceDiscounted = "";
+                try
+                {
+                    priceDiscounted = doc.DocumentNode.Descendants("div").Where(d => d.Attributes.Count > 0
+                    && d.Attributes["class"] != null && d.Attributes["class"].Value.Contains("extra-discount-price")).Select(a => a.ChildNodes.Descendants("span").FirstOrDefault().InnerText).FirstOrDefault();
+
+                    rec.Price = Convert.ToDouble(priceDiscounted);
+                }
+                catch (Exception)
+                {
+                    if (price == null)
+                    {
+                        return null;
+                    }
+                }
             }
             catch (Exception e)
             {

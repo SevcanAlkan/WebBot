@@ -20,16 +20,24 @@ namespace WebSearcher
     public partial class Form1 : Form
     {
         private DataContext _db;
-        private List<ItemListVM> SearchResults = new List<ItemListVM>();
-        private static Scanner sc = new Scanner();
-        private SearchPoint rec;
-        //Task searchTask;
-        System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
+        private List<ItemListVM> SearchResults;
+        private static Scanner SC;
+        private SearchPoint Rec;
+        private bool BotIsActive;
+
+        private Timer BotTimer;
+        private BackgroundWorker SearchBW;
+
+        private List<string> Log;
 
         public Form1()
         {
             InitializeComponent();
 
+            SearchResults = new List<ItemListVM>();
+            SC = new Scanner();
+            BotTimer = new Timer();
+            SearchBW = new BackgroundWorker();
         }
 
         private DataContext DataContext
@@ -47,41 +55,81 @@ namespace WebSearcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.Log = new List<string>();
+            Control.CheckForIllegalCrossThreadCalls = false;
+            this.AddLog("Program loading...");
+
+            this.AddLog("Keywords loading...");
             KeywordContext.Load();
+            this.AddLog("WebSites loading...");
             WebSiteContext.Load();
             this.UpdateKeywordList();
+            this.AddLog("UI Components loading...");
             this.LoadDataGrids();
+            this.AddLog("Bot settings are loaded, Bot is diseabled!");
+            this.BotIsActive = false;
+          
 
             cbWebSite.DataSource = WebSiteContext.Sites;
             cbWebSite.DisplayMember = "Name";
             cbWebSite.ValueMember = "Id";
 
-            //searchTask = Task.Run((Action)Search);
+            cbBotStatus.DataSource = Enum.GetValues(typeof(BotStatusEnum));
 
-            //t.Interval = 15000; // specify interval time as you want
-            //t.Tick += new EventHandler(timer_Tick);
-            //t.Start();
+            BotTimer.Interval = 15000;
+            BotTimer.Tick += new EventHandler(timer_Tick);
+            BotTimer.Start();
+
+            this.AddLog("Program succesfully loaded!");
         }
 
-        void timer_Tick(object sender, EventArgs e)
+        private async void timer_Tick(object sender, EventArgs e)
         {
+            this.AddLog("Background worker started.");
+            Search();
             UpdateKeywordList();
+
+            if (this.BotIsActive)
+            {
+                await Task.Run(() =>
+                {
+                    DateTime compareDate = DateTime.Now.AddDays(-1);
+                    var recs = DataContext.searchPoints.Where(a => DbFunctions.DiffDays(a.CheckDate, compareDate) > 0).ToList();
+
+                    if (recs != null)
+                    {
+                        this.AddLog("Ads Prices are updating...");
+                        foreach (var item in recs)
+                        {
+                            var rec = SC.HPUpdateAd(item);
+                            item.Price = rec.Price;
+                            item.CheckDate = DateTime.Now;
+                        }
+
+                        DataContext.SaveChanges();
+
+                        this.AddLog("Ads Prices are updated!");
+                    }
+                });
+            }
+
+            this.AddLog("Background worker completed its tasks.");
         }
 
         private void Search()
         {
             if (KeywordContext.Keywords.Count > 0)
             {
-                var result = sc.HPScanAds(KeywordContext.TakeKeyword(), 3);
+                this.AddLog("A Keyword Searcing...");
+                var result = SC.HPScanAds(KeywordContext.TakeKeyword(), 3);
 
                 if (result != null && result.Count > 0)
                 {
                     SearchResults.AddRange(result);
                     UpdateKeywordList();
                 }
+                this.AddLog("Keyword Search Copleted!");
             }
-
-            MessageBox.Show("Task Worked");
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -107,16 +155,18 @@ namespace WebSearcher
             dgSearch.Columns["WebSiteId"].DisplayIndex = 1;
             dgSearch.Columns["WebSiteId"].Visible = false;
 
-            dgSearch.Columns["Name"].DisplayIndex = 2;
+            dgSearch.Columns["WebSiteStr"].DisplayIndex = 2;
+
+            dgSearch.Columns["Name"].DisplayIndex = 3;
             dgSearch.Columns["Name"].Width = 300;
 
-            dgSearch.Columns["Price"].DisplayIndex = 2;
+            dgSearch.Columns["Price"].DisplayIndex = 4;
             dgSearch.Columns["Price"].Visible = false;
 
-            dgSearch.Columns["PriceStr"].DisplayIndex = 3;
+            dgSearch.Columns["PriceStr"].DisplayIndex = 5;
             dgSearch.Columns["PriceStr"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            dgSearch.Columns["URL"].DisplayIndex = 4;
+            dgSearch.Columns["URL"].DisplayIndex = 6;
             dgSearch.Columns["URL"].Width = 1000;
 
             dgAds.AutoResizeColumns();
@@ -196,7 +246,6 @@ namespace WebSearcher
             if (this.txtKeyword.Text != "")
             {
                 KeywordContext.AddKeyword(this.txtKeyword.Text);
-                Task.Factory.StartNew(Search, TaskCreationOptions.LongRunning);
 
                 this.UpdateKeywordList();
             }
@@ -216,9 +265,9 @@ namespace WebSearcher
         {
             try
             {
-                if (rec != null)
+                if (Rec != null)
                 {
-                    DataContext.searchPoints.Add(rec);
+                    DataContext.searchPoints.Add(Rec);
                     DataContext.SaveChanges();
 
                     dgAds_BindingContextChanged(this, new EventArgs());
@@ -320,7 +369,7 @@ namespace WebSearcher
 
                 if (gridRec != null)
                 {
-                    rec = gridRec;
+                    Rec = gridRec;
 
                     btnTest.Enabled = false;
                     txtName.Enabled = false;
@@ -347,7 +396,7 @@ namespace WebSearcher
             txtName.Enabled = true;
             txtURL.Enabled = true;
 
-            rec = null;
+            Rec = null;
         }
 
         private void btnTest_Click(object sender, EventArgs e)
@@ -369,16 +418,16 @@ namespace WebSearcher
             switch (site.Id)
             {
                 case 1:
-                    rec = sc.HPScanAd(txtURL.Text);
+                    Rec = SC.HPScanAd(txtURL.Text);
                     break;
                 case 2:
-                    rec = sc.N11ScanAd(txtURL.Text);
+                    Rec = SC.N11ScanAd(txtURL.Text);
                     break;
                 default:
                     break;
             }
 
-            if (rec == null)
+            if (Rec == null)
             {
                 lblTestStatus.ForeColor = Color.Red;
                 lblTestStatus.Text = "Operation failed!";
@@ -391,7 +440,7 @@ namespace WebSearcher
                     string tempText = txtName.Text;
                     FillForm();
                     txtName.Text = tempText;
-                    rec.Name = tempText;
+                    Rec.Name = tempText;
                 }
                 else
                 {
@@ -406,15 +455,58 @@ namespace WebSearcher
 
         private void FillForm()
         {
-            lblId.Text = rec.Id.ToString();
-            txtName.Text = rec.Name;
-            txtURL.Text = rec.UrlParameters;
-            cbWebSite.SelectedItem = WebSiteContext.GetModel(rec.WebSite);
-            lblCheckDate.Text = String.Format("{0:dd/MM/yyyy hh:mm:ss tt}", rec.CheckDate);
-            txtPrice.Text = String.Format("{0:00}", rec.Price);
-            lblCurrency.Text = WebSiteContext.GetCurrencyCode(rec.WebSite);
+            lblId.Text = Rec.Id.ToString();
+            txtName.Text = Rec.Name;
+            txtURL.Text = Rec.UrlParameters;
+            cbWebSite.SelectedItem = WebSiteContext.GetModel(Rec.WebSite);
+            lblCheckDate.Text = String.Format("{0:dd/MM/yyyy hh:mm:ss tt}", Rec.CheckDate);
+            txtPrice.Text = String.Format("{0:00}", Rec.Price);
+            lblCurrency.Text = WebSiteContext.GetCurrencyCode(Rec.WebSite);
 
             cbWebSite.Enabled = false;
+        }
+
+        private void cbBotStatus_SelectedValueChanged(object sender, EventArgs e)
+        {
+            BotStatusEnum status;
+            Enum.TryParse<BotStatusEnum>(cbBotStatus.SelectedValue.ToString(), out status);
+
+            switch (status)
+            {
+                case BotStatusEnum.Active:
+                    this.BotIsActive = true;
+                    this.lblBotStatus.Text = "Bot is working!";
+                    this.lblBotStatus.ForeColor = Color.Green;
+                    this.AddLog("BOT Activated!");
+                    break;
+                case BotStatusEnum.DeActive:
+                    this.BotIsActive = false;
+                    this.lblBotStatus.Text = "Bot is not working!";
+                    this.lblBotStatus.ForeColor = Color.Red;
+                    this.AddLog("BOT DeActivated!");
+                    break;
+            }
+        }
+
+        private void AddLog(object o)
+        {
+            try
+            {
+                this.Log.Add(String.Format("{0:dd/MM/yyyy hh:mm:ss tt} : {1}", DateTime.Now, o.ToString()));
+            }
+            catch (Exception e)
+            {
+                this.Log.Add("ERROR /-----------------------------------------------/");
+                this.Log.Add(e.ToString());
+                this.Log.Add("------------------------------------------------------/");
+            }
+            finally
+            {
+                lstLog.DataSource = null;
+                lstLog.DataSource = this.Log;
+                lstLog.Refresh();
+                lstLog.Update();
+            }
         }
     }
 

@@ -34,6 +34,9 @@
             this.txtKeyword = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tbBot = new System.Windows.Forms.TabPage();
+            this.lblBotStatus = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.cbBotStatus = new System.Windows.Forms.ComboBox();
             this.tbSearch = new System.Windows.Forms.TabPage();
             this.dgSearch = new System.Windows.Forms.DataGridView();
             this.btnSearchClear = new System.Windows.Forms.Button();
@@ -43,11 +46,11 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tbAds = new System.Windows.Forms.TabPage();
+            this.dgAds = new System.Windows.Forms.DataGridView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsBtnShow = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsBtnRemove = new System.Windows.Forms.ToolStripButton();
-            this.dgAds = new System.Windows.Forms.DataGridView();
             this.lblTestStatus = new System.Windows.Forms.Label();
             this.btnClearRegistrationFrom = new System.Windows.Forms.Button();
             this.btnTest = new System.Windows.Forms.Button();
@@ -65,12 +68,14 @@
             this.cbWebSite = new System.Windows.Forms.ComboBox();
             this.lblId = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.lstLog = new System.Windows.Forms.ListBox();
             this.tabControl1.SuspendLayout();
+            this.tbBot.SuspendLayout();
             this.tbSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgSearch)).BeginInit();
             this.tbAds.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgAds)).BeginInit();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstSearchKeywords
@@ -114,12 +119,45 @@
             // 
             // tbBot
             // 
+            this.tbBot.Controls.Add(this.lstLog);
+            this.tbBot.Controls.Add(this.lblBotStatus);
+            this.tbBot.Controls.Add(this.label9);
+            this.tbBot.Controls.Add(this.cbBotStatus);
             this.tbBot.Location = new System.Drawing.Point(4, 22);
             this.tbBot.Name = "tbBot";
             this.tbBot.Size = new System.Drawing.Size(940, 446);
             this.tbBot.TabIndex = 3;
             this.tbBot.Text = "BOT Control";
             this.tbBot.UseVisualStyleBackColor = true;
+            // 
+            // lblBotStatus
+            // 
+            this.lblBotStatus.AutoSize = true;
+            this.lblBotStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBotStatus.ForeColor = System.Drawing.Color.Red;
+            this.lblBotStatus.Location = new System.Drawing.Point(145, 11);
+            this.lblBotStatus.Name = "lblBotStatus";
+            this.lblBotStatus.Size = new System.Drawing.Size(113, 13);
+            this.lblBotStatus.TabIndex = 4;
+            this.lblBotStatus.Text = "Bot is not working!";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(8, 11);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(37, 13);
+            this.label9.TabIndex = 3;
+            this.label9.Text = "Status";
+            // 
+            // cbBotStatus
+            // 
+            this.cbBotStatus.FormattingEnabled = true;
+            this.cbBotStatus.Location = new System.Drawing.Point(51, 8);
+            this.cbBotStatus.Name = "cbBotStatus";
+            this.cbBotStatus.Size = new System.Drawing.Size(88, 21);
+            this.cbBotStatus.TabIndex = 2;
+            this.cbBotStatus.SelectedValueChanged += new System.EventHandler(this.cbBotStatus_SelectedValueChanged);
             // 
             // tbSearch
             // 
@@ -259,6 +297,23 @@
             this.tbAds.Text = "Ads";
             this.tbAds.UseVisualStyleBackColor = true;
             // 
+            // dgAds
+            // 
+            this.dgAds.AllowUserToAddRows = false;
+            this.dgAds.AllowUserToDeleteRows = false;
+            this.dgAds.AllowUserToResizeRows = false;
+            this.dgAds.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgAds.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dgAds.Location = new System.Drawing.Point(6, 200);
+            this.dgAds.MultiSelect = false;
+            this.dgAds.Name = "dgAds";
+            this.dgAds.ReadOnly = true;
+            this.dgAds.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgAds.Size = new System.Drawing.Size(928, 243);
+            this.dgAds.TabIndex = 99;
+            this.dgAds.TabStop = false;
+            this.dgAds.BindingContextChanged += new System.EventHandler(this.dgAds_BindingContextChanged);
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
@@ -299,23 +354,6 @@
             this.tsBtnRemove.Size = new System.Drawing.Size(54, 22);
             this.tsBtnRemove.Text = "Remove";
             this.tsBtnRemove.Click += new System.EventHandler(this.tsBtnRemove_Click);
-            // 
-            // dgAds
-            // 
-            this.dgAds.AllowUserToAddRows = false;
-            this.dgAds.AllowUserToDeleteRows = false;
-            this.dgAds.AllowUserToResizeRows = false;
-            this.dgAds.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgAds.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dgAds.Location = new System.Drawing.Point(6, 200);
-            this.dgAds.MultiSelect = false;
-            this.dgAds.Name = "dgAds";
-            this.dgAds.ReadOnly = true;
-            this.dgAds.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgAds.Size = new System.Drawing.Size(928, 243);
-            this.dgAds.TabIndex = 99;
-            this.dgAds.TabStop = false;
-            this.dgAds.BindingContextChanged += new System.EventHandler(this.dgAds_BindingContextChanged);
             // 
             // lblTestStatus
             // 
@@ -484,6 +522,14 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "ID:";
             // 
+            // lstLog
+            // 
+            this.lstLog.FormattingEnabled = true;
+            this.lstLog.Location = new System.Drawing.Point(11, 35);
+            this.lstLog.Name = "lstLog";
+            this.lstLog.Size = new System.Drawing.Size(921, 407);
+            this.lstLog.TabIndex = 5;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -502,14 +548,16 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
+            this.tbBot.ResumeLayout(false);
+            this.tbBot.PerformLayout();
             this.tbSearch.ResumeLayout(false);
             this.tbSearch.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgSearch)).EndInit();
             this.tbAds.ResumeLayout(false);
             this.tbAds.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgAds)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgAds)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -551,6 +599,10 @@
         private System.Windows.Forms.Label lblId;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DataGridView dgSearch;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox cbBotStatus;
+        private System.Windows.Forms.Label lblBotStatus;
+        private System.Windows.Forms.ListBox lstLog;
     }
 }
 
